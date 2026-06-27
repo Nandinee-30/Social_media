@@ -64,18 +64,21 @@ def like_post(request, post_id):
 
     post = get_object_or_404(Post, id=post_id)
 
+    existing_like = Like.objects.filter(
+        post=post,
+        user=request.user
+    )
 
-    if request.user in post.likes.all():
-
-        post.likes.remove(request.user)
+    if existing_like.exists():
+        existing_like.delete()
 
     else:
-
-        post.likes.add(request.user)
-
+        Like.objects.create(
+            post=post,
+            user=request.user
+        )
 
     return redirect('index')
-
 
 
 def add_comment(request, post_id):
